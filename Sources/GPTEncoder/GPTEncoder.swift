@@ -65,10 +65,31 @@ public final class GPTEncoder {
         return decodeString(array: arrays, byteEncoder: byteEncoder)
     }
     
+//    public func encode(text: String) -> [Int] {
+//        var bpe_tokens = [Int]()
+//        let matches = regex.matches(in: text, options: [], range: NSRange(text.startIndex..., in: text))
+//            .compactMap { match in
+//                if let range = Range(match.range, in: text) {
+//                    return String(text[range])
+//                } else {
+//                    return nil
+//                }
+//            }
+//
+//        for match in matches {
+//            let token = encodeString(text: match).compactMap { byteEncoder[Int($0)] }.joined(separator: "")
+//            let bpe = bpe(token: token)
+//            let splits = bpe.split(separator: " ")
+//            let newTokens = splits.compactMap { self.encoder[String($0)]}
+//            bpe_tokens.append(contentsOf: newTokens)
+//        }
+//        return bpe_tokens
+//    }
+      
     public func encode(text: String) -> [Int] {
         var bpe_tokens = [Int]()
         let matches = regex.matches(in: text, options: [], range: NSRange(text.startIndex..., in: text))
-            .compactMap { match in
+            .compactMap { (match: NSTextCheckingResult) -> String? in
                 if let range = Range(match.range, in: text) {
                     return String(text[range])
                 } else {
@@ -85,7 +106,8 @@ public final class GPTEncoder {
         }
         return bpe_tokens
     }
-        
+
+    
     private func bpe(token: String) -> String {
         if let cachedToken = cache[token] {
             return cachedToken
